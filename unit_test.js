@@ -32,6 +32,7 @@ async function makeApiRequest(modelId, messages, parameters = {}) {
 // 定义测试组
 const testGroups = [
     ...messageTests,
+    ...assistantMessageTests,
     // 可以在这里添加其他类型的测试组
 ];
 
