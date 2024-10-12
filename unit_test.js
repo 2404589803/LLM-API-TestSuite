@@ -33,11 +33,11 @@ async function makeApiRequest(modelId, messages, parameters = {}) {
 const testGroups = [
     ...messageTests,
     ...assistantMessageTests,
-    ...toolMessageTests, // 添加工具消息测试组
+    ...toolMessageTests,
     ...functionMessageTests, // 添加函数消息测试组
-    // 可以在这里添加其他类型的测试组
 ];
 
+// 测试模型
 async function testModel(modelId) {
     const testResultsContainer = document.createElement('div');
     testResultsContainer.id = `test-results-${modelId}`;
@@ -51,6 +51,7 @@ async function testModel(modelId) {
     const modelDiv = document.querySelector(`#modelList > div > div:has(span[title="${modelId}"])`);
     modelDiv.appendChild(testResultsContainer);
 
+    // 添加消息测试
     for (const testSuite of messageTests) {
         const suiteContainer = document.createElement('div');
         suiteContainer.className = 'mb-6';
@@ -319,57 +320,6 @@ async function testModel(modelId) {
 
         testResultsContainer.appendChild(suiteContainer);
     }
-}
-
-function displayTestResults(modelId, results) {
-    const container = document.querySelector('.container.mx-auto.max-w-4xl');
-    let resultsDiv = document.getElementById(`test-results-${modelId}`);
-    
-    if (!resultsDiv) {
-        resultsDiv = document.createElement('div');
-        resultsDiv.id = `test-results-${modelId}`;
-        resultsDiv.className = 'mt-8 mb-8 bg-white rounded-2xl shadow-lg p-8 space-y-6';
-        resultsDiv.innerHTML = `<h3 class="text-xl font-semibold mb-4">模型 ${modelId} 的测试结果：</h3>`;
-        container.appendChild(resultsDiv);
-    }
-
-    resultsDiv.innerHTML = `<h3 class="text-xl font-semibold mb-4">模型 ${modelId} 的测试结果：</h3>`;
-
-    results.forEach((group) => {
-        const groupDiv = document.createElement('div');
-        groupDiv.className = 'mb-6';
-        groupDiv.innerHTML = `<h4 class="text-lg font-medium mb-3">${group.name}：</h4>`;
-
-        group.tests.forEach(test => {
-            const testDiv = document.createElement('div');
-            testDiv.className = 'flex flex-col p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-300 mb-3';
-
-            const headerDiv = document.createElement('div');
-            headerDiv.className = 'flex items-center justify-between space-x-3 mb-2';
-            headerDiv.innerHTML = `
-                <div class="flex items-center space-x-3">
-                    <span class="w-3 h-3 rounded-full flex-shrink-0 ${test.success ? 'bg-green-500' : 'bg-red-500'}"></span>
-                    <span class="font-medium truncate" title="${test.name}">${test.name}</span>
-                </div>
-                <span class="text-sm text-gray-500 flex-shrink-0">${test.latency}ms</span>
-            `;
-
-            const parametersDiv = document.createElement('div');
-            parametersDiv.className = 'text-sm text-gray-600 bg-gray-100 p-2 rounded-md mb-2 whitespace-pre-line';
-            parametersDiv.textContent = JSON.stringify(test.parameters, null, 2);
-
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'text-sm text-gray-700 bg-gray-200 p-2 rounded-md';
-            messageDiv.textContent = test.message;
-
-            testDiv.appendChild(headerDiv);
-            testDiv.appendChild(parametersDiv);
-            testDiv.appendChild(messageDiv);
-            groupDiv.appendChild(testDiv);
-        });
-
-        resultsDiv.appendChild(groupDiv);
-    });
 }
 
 // 导出函数以供其他文件使用
