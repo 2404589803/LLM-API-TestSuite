@@ -24,7 +24,7 @@ const baseUrls = {
         "chinese_name": "阶跃星辰"
     },
     "Zhipu": {
-        "base_url": "https://open.bigmodel.cn/api/paas/v4/",
+        "base_url": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
         "chinese_name": "智谱"
     }
 };
