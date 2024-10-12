@@ -34,9 +34,9 @@ const testGroups = [
     ...messageTests,
     ...assistantMessageTests,
     ...toolMessageTests, // 添加工具消息测试组
+    ...functionMessageTests, // 添加函数消息测试组
     // 可以在这里添加其他类型的测试组
 ];
-
 
 async function testModel(modelId) {
     const testResultsContainer = document.createElement('div');
@@ -84,7 +84,6 @@ async function testModel(modelId) {
                 </svg>
             `;
 
-
             const latencySpan = document.createElement('span');
             latencySpan.className = 'text-sm text-gray-500';
             latencySpan.textContent = '测试中';
@@ -124,7 +123,6 @@ async function testModel(modelId) {
                        </svg>`;
             };
 
-
             suiteContainer.appendChild(testItem);
 
             // 开始测试
@@ -138,7 +136,6 @@ async function testModel(modelId) {
                 responseInfo.textContent = error.message;
             });
         }
-
 
         testResultsContainer.appendChild(suiteContainer);
     }
@@ -324,7 +321,6 @@ async function testModel(modelId) {
     }
 }
 
-
 function displayTestResults(modelId, results) {
     const container = document.querySelector('.container.mx-auto.max-w-4xl');
     let resultsDiv = document.getElementById(`test-results-${modelId}`);
@@ -375,7 +371,6 @@ function displayTestResults(modelId, results) {
         resultsDiv.appendChild(groupDiv);
     });
 }
-
 
 // 导出函数以供其他文件使用
 window.testModel = testModel;
