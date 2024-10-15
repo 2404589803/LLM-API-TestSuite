@@ -143,5 +143,4 @@ async function testModel(modelId) {
 }
 
 // 导出函数以供其他文件使用
-window.testModel = testModel;
-window.makeApiRequest = makeApiRequest;
+export { testModel, makeApiRequest };
