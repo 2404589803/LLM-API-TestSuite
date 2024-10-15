@@ -42,7 +42,7 @@ async function testModel(modelId) {
     const testResultsContainer = document.createElement('div');
     testResultsContainer.id = `test-results-${modelId}`;
     testResultsContainer.className = 'mt-4 p-4 bg-white rounded-lg shadow';
-    
+
     const testTitle = document.createElement('h3');
     testTitle.className = 'text-lg font-semibold mb-4';
     testTitle.textContent = `模型 ${modelId} 的测试结果`;
@@ -77,54 +77,22 @@ async function testModel(modelId) {
             testName.className = 'text-sm font-medium';
             testName.textContent = test.name;
 
-            const toggleIcon = document.createElement('span');
-            toggleIcon.className = 'text-gray-500 ml-1';
-            toggleIcon.innerHTML = `
-                <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-            `;
-
             const latencySpan = document.createElement('span');
             latencySpan.className = 'text-sm text-gray-500';
             latencySpan.textContent = '测试中';
 
             testNameContainer.appendChild(statusIndicator);
             testNameContainer.appendChild(testName);
-            testNameContainer.appendChild(toggleIcon);
-
             testHeader.appendChild(testNameContainer);
             testHeader.appendChild(latencySpan);
-
             testItem.appendChild(testHeader);
-
-            const collapsibleContent = document.createElement('div');
-            collapsibleContent.className = 'hidden mt-2';
-
-            const requestInfo = document.createElement('p');
-            requestInfo.className = 'text-sm text-gray-600 bg-gray-100 p-2 rounded-md mb-2 whitespace-pre-line overflow-x-auto';
-            const messagesString = JSON.stringify(test.test.toString().match(/messages = ([\s\S]*?);/)[1], null, 2);
-            requestInfo.textContent = messagesString.replace(/^"|"$/g, '').replace(/\\n/g, '\n').replace(/\\"/g, '"');
-            collapsibleContent.appendChild(requestInfo);
 
             const responseInfo = document.createElement('div');
             responseInfo.className = 'text-sm text-gray-700 bg-gray-200 p-2 rounded-md';
-            collapsibleContent.appendChild(responseInfo);
-
-            testItem.appendChild(collapsibleContent);
-
-            testHeader.onclick = () => {
-                collapsibleContent.classList.toggle('hidden');
-                toggleIcon.innerHTML = collapsibleContent.classList.contains('hidden') 
-                    ? `<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                       </svg>`
-                    : `<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
-                       </svg>`;
-            };
+            testItem.appendChild(responseInfo);
 
             suiteContainer.appendChild(testItem);
+            testResultsContainer.appendChild(suiteContainer);
 
             // 开始测试
             test.test(modelId).then(result => {
@@ -137,10 +105,9 @@ async function testModel(modelId) {
                 responseInfo.textContent = error.message;
             });
         }
-
-        testResultsContainer.appendChild(suiteContainer);
     }
 }
 
 // 导出函数以供其他文件使用
-export { testModel, makeApiRequest };
+window.testModel = testModel;
+window.makeApiRequest = makeApiRequest;
