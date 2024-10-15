@@ -1,35 +1,3 @@
-// 封装 API 请求函数
-async function makeApiRequest(modelId, messages, parameters = {}) {
-    const startTime = Date.now();
-    try {
-        const response = await fetch(`${baseUrl}/chat/completions`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: modelId,
-                messages: messages,
-                ...parameters
-            })
-        });
-        const endTime = Date.now();
-        const latency = endTime - startTime;
-
-        if (!response.ok) {
-            const errorBody = await response.text();
-            throw new Error(`HTTP error! status: ${response.status}, message: ${errorBody}`);
-        }
-
-        const data = await response.json();
-        return { data, latency };
-    } catch (error) {
-        throw error;
-    }
-}
-
-// 定义测试组
 const testGroups = [
     ...messageTests,
     ...assistantMessageTests,
@@ -37,7 +5,6 @@ const testGroups = [
     ...functionMessageTests, // 添加函数消息测试组
 ];
 
-// 测试模型
 async function testModel(modelId) {
     const testResultsContainer = document.createElement('div');
     testResultsContainer.id = `test-results-${modelId}`;
@@ -105,6 +72,37 @@ async function testModel(modelId) {
                 responseInfo.textContent = error.message;
             });
         }
+    }
+}
+
+// 封装 API 请求函数
+async function makeApiRequest(modelId, messages, parameters = {}) {
+    const startTime = Date.now();
+    try {
+        const response = await fetch(`${baseUrl}/chat/completions`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: modelId,
+                messages: messages,
+                ...parameters
+            })
+        });
+        const endTime = Date.now();
+        const latency = endTime - startTime;
+
+        if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorBody}`);
+        }
+
+        const data = await response.json();
+        return { data, latency };
+    } catch (error) {
+        throw error;
     }
 }
 
