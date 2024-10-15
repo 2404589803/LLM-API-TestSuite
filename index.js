@@ -93,6 +93,37 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('fetchModels').addEventListener('click', fetchModels);
 });
 
+// 通用的 API 请求函数
+async function makeApiRequest(url, key, modelId, messages) {
+    const startTime = Date.now();
+    try {
+        const response = await fetch(`${url}/chat/completions`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${key}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: modelId,
+                messages: messages,
+                max_tokens: 5
+            })
+        });
+
+        const endTime = Date.now();
+        const latency = endTime - startTime;
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return { data, latency };
+    } catch (error) {
+        throw error;
+    }
+}
+
 async function fetchModels() {
     const fetchButton = document.getElementById('fetchModels');
     const modelList = document.getElementById('modelList');
@@ -139,19 +170,20 @@ async function fetchModels() {
     }
 }
 
-function displayError(message) {
-    const modelList = document.getElementById('modelList');
-    modelList.innerHTML = `
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <strong class="font-bold">错误：</strong>
-            <span class="block sm:inline">${message}</span>
-        </div>
-    `;
-}
-
-function resetFetchButton(button) {
-    button.disabled = false;
-    button.textContent = '获取模型列表';
+async function pingModel(modelId) {
+    try {
+        const messages = [{ role: "user", content: "Hello" }];
+        const { data, latency } = await makeApiRequest(baseUrl, apiKey, modelId, messages);
+        const model = models.find(m => m.id === modelId);
+        model.pingSuccess = true;
+        model.latency = latency;
+        model.response = data.choices[0].message.content;
+    } catch (error) {
+        const model = models.find(m => m.id === modelId);
+        model.pingSuccess = false;
+        model.latency = Infinity;
+        model.error = error.message;
+    }
 }
 
 // 排序并显示模型列表
@@ -201,70 +233,19 @@ function sortAndDisplayModels() {
     }
 }
 
-// Ping 模型
-async function pingModel(modelId) {
-    try {
-        const startTime = Date.now();
-        const response = await fetch(`${baseUrl}/chat/completions`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: modelId,
-                messages: [{ role: "user", content: "Hello" }],
-                max_tokens: 5
-            })
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            const endTime = Date.now();
-            const model = models.find(m => m.id === modelId);
-            model.pingSuccess = true;
-            model.latency = endTime - startTime;
-            model.response = data.choices[0].message.content;
-        } else {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-    } catch (error) {
-        const model = models.find(m => m.id === modelId);
-        model.pingSuccess = false;
-        model.latency = Infinity;
-        model.error = error.message;
-    }
+function displayError(message) {
+    const modelList = document.getElementById('modelList');
+    modelList.innerHTML = `
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">错误：</strong>
+            <span class="block sm:inline">${message}</span>
+        </div>
+    `;
 }
 
-// 更新切换按钮
-function updateToggleButton() {
-    const modelCard = document.querySelector('#modelList > div');
-    let toggleButton = modelCard.querySelector('.toggle-button');
-    if (!toggleButton) {
-        toggleButton = document.createElement('button');
-        toggleButton.className = 'toggle-button col-span-1 sm:col-span-2 mt-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors duration-200';
-    }
-
-    if (models.length > 6) {
-        toggleButton.textContent = '显示更多';
-        toggleButton.onclick = () => {
-            const hiddenItems = modelCard.querySelectorAll('.hidden');
-            if (hiddenItems.length > 0) {
-                hiddenItems.forEach(item => item.classList.remove('hidden'));
-                toggleButton.textContent = '折叠';
-            } else {
-                Array.from(modelCard.children).forEach((item, index) => {
-                    if (index >= 6 && !item.classList.contains('toggle-button')) {
-                        item.classList.add('hidden');
-                    }
-                });
-                toggleButton.textContent = '显示更多';
-            }
-        };
-        modelCard.appendChild(toggleButton);
-    } else if (toggleButton.parentNode) {
-        toggleButton.parentNode.removeChild(toggleButton);
-    }
+function resetFetchButton(button) {
+    button.disabled = false;
+    button.textContent = '获取模型列表';
 }
 
 // 测试模型
@@ -297,7 +278,6 @@ function toggleModelVisibility() {
 // 在 unit_test.js 中修改 testModel 函数
 async function testModel(modelId) {
     // ... 原有的测试逻辑 ...
-
     // 测试完成后，保持当前视图
     sortAndDisplayModels();
 }
