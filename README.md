@@ -1,27 +1,27 @@
-# LLM-API-TestSuite
+# LLM-API-TestSuite 🚀
 
-LLM-API-TestSuite 是一个前端项目，旨在对各家大模型（LLM）的 API 接口进行一致性和功能性测试。项目基于 OpenAI API 标准，但适用于多个不同的 LLM 接口，帮助开发者通过纯前端方式验证不同大模型的 API 是否符合预期标准。
+LLM-API-TestSuite is a frontend project designed to perform consistency and functionality testing for various Large Language Model (LLM) APIs. Built on the OpenAI API standard, this project supports multiple LLM interfaces, helping developers validate different model APIs through a pure frontend approach.
 
+### ✨ Features
 
-## 功能特性
+- **Multi-Model Support**: Compatible with OpenAI and other LLM API interface testing
+- **OpenAI API Standard Based**: Provides a unified testing framework ensuring all models follow the same API standards
+- **Pure Frontend Implementation**: No backend required, all tests run in the browser for quick integration
+- **Lightweight & Extensible**: Support custom test cases through JS files for easy adaptation to new models
 
-- **多家大模型支持**：兼容 OpenAI 以及其他大模型 API 的接口检测。
-- **基于 OpenAI API 标准**：提供统一的测试框架，确保各个大模型遵循相同的 API 标准。
-- **前端纯 HTML/JS 实现**：无需服务器端，所有测试均在浏览器端运行，便于快速集成和测试。
-- **轻量级和灵活扩展**：支持通过 JS 文件创建自定义测试用例，方便对新模型和 API 的适配和验证。
+### 🛠️ Getting Started
 
-## 使用说明
+1. **Clone Project**: Clone locally or view directly on GitHub Pages
+2. **Configure API**: Enter required API Key and select model provider
+3. **Run Tests**: Click "Get Model List" button and select model for testing
+4. **View Results**: Test results display below, including detailed case info and response times
 
-1. **克隆项目**：将项目克隆到本地或直接在 GitHub Pages 上查看。
-2. **配置 API**：在页面中输入所需的 API Key 和选择对应的模型服务商。
-3. **运行测试**：点击“获取模型列表”按钮，选择模型后进行测试。
-4. **查看结果**：测试结果将显示在页面下方，包括每个测试用例的详细信息和响应时间。
+### 🤝 Contributing
 
+Contributions are welcome! Please submit issues or pull requests to participate.
 
-## 贡献
+### 📄 License
 
-欢迎对本项目进行贡献！请通过提交 issue 或 pull request 的方式参与项目开发。
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 许可证
-
-本项目采用 MIT 许可证，详情请参阅 LICENSE 文件。
+[中文文档](./README_CN.md)
